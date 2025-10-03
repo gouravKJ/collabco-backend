@@ -101,8 +101,6 @@ app.post("/api/login",async(req,res)=>{
         res.status(500).json({message:"server error"});
     }
 });
-
-// NEW ENDPOINT - Add this to get current user info
 app.get("/api/user/me", auth, async(req, res) => {
     try {
         console.log("Fetching user info for ID:", req.user.id);
@@ -214,8 +212,6 @@ io.on("connection",(socket)=>{
     //joining room
     socket.on("joinproject", async ({projectId,username})=>{
         socket.join(projectId);
-        
-
         try {
             const currentProject = await project.findById(projectId);
             if (currentProject && currentProject.code) {
@@ -227,7 +223,6 @@ io.on("connection",(socket)=>{
             console.error("Error loading project code:", err);
         }
         
-        // Notify others that a user joined
         socket.to(projectId).emit("userjoined",{username, id: socket.id});
         console.log(`${username} joined project: ${projectId}`);
     });
@@ -235,7 +230,6 @@ io.on("connection",(socket)=>{
     
   //handling code
 socket.on("codechange",({projectId,code})=>{
-    // Use socket.to to broadcast to all clients EXCEPT the sender
     socket.to(projectId).emit("receivecode",{code});
 });
 
