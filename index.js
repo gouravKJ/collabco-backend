@@ -232,11 +232,12 @@ io.on("connection",(socket)=>{
         console.log(`${username} joined project: ${projectId}`);
     });
 
-    //handling code
-    socket.on("codechange",({projectId,code})=>{
-        // Broadcast to all clients in the room
-        io.to(projectId).emit("receivecode",{code});
-    });
+    
+  //handling code
+socket.on("codechange",({projectId,code})=>{
+    // Use socket.to to broadcast to all clients EXCEPT the sender
+    socket.to(projectId).emit("receivecode",{code});
+});
 
     //chat 
     socket.on("chatmessage",({projectId,username,message})=>{
